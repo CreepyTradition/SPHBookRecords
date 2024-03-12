@@ -266,7 +266,7 @@ public class dataEntry extends javax.swing.JFrame {
             displayTable();
         } catch (ClassNotFoundException | SQLException ex) {
         Logger.getLogger(dataEntry.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } JOptionPane.showMessageDialog(this, "Book Added to Library!");
     }//GEN-LAST:event_bookAddActionPerformed
 
     private void mainMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mainMenuActionPerformed

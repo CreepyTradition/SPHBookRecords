@@ -4,20 +4,17 @@
  */
 package sphbookrecords;
 
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import javax.swing.JTable;
+import java.text.MessageFormat;
 import javax.swing.table.DefaultTableModel;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.OrientationRequested;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 
 /**
  *
@@ -177,93 +174,27 @@ public class logFiles extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
-       try {
-            PDDocument document = new PDDocument();
-            PDPage page = new PDPage();
-            document.addPage(page);
-
-            PDPageContentStream contentStream = new PDPageContentStream(document, page);
-
-            int sumOfQuantities = displayTable(contentStream);
-
-            contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
-            contentStream.newLine();
-            contentStream.showText("Sum of Quantities: " + sumOfQuantities);
-
-            contentStream.close();
-
-            document.save(new File("./Desktop/TableData.pdf"));
-            document.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        DefaultTableModel model = (DefaultTableModel) ContainerTable.getModel();
+        int sum = 0;
+        for(int i = 0; i < model.getRowCount(); i++){
+        sum += Integer.parseInt(model.getValueAt(i, model.getColumnCount()-1).toString());
+        }
+        model.addRow(new Object[]{"Sum of Books", "", "", sum});
+        
+        MessageFormat header = new MessageFormat("Book Log");
+        MessageFormat footer = new MessageFormat("Page {0,number,integer}");
+        try {
+            PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
+            set.add(OrientationRequested.PORTRAIT);
+            ContainerTable.print(JTable.PrintMode.FIT_WIDTH, header, footer, true, set, true);
+            model.removeRow(model.getRowCount() - 1);
+            JOptionPane.showMessageDialog(null, "\n" + "Printed Successfully!");
+        } catch (java.awt.print.PrinterException e) {
+            JOptionPane.showMessageDialog(null, "\n" + "Failed"
+                + "\n" + e);
         }
     }//GEN-LAST:event_printButtonActionPerformed
 
-    private int displayTable(PDPageContentStream contentStream) {
-        updateTable();
-        int sumOfQuantities = 0;
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost/sphbookinventory", "root", "");
-
-            Statement st = con.createStatement();
-            String sql = "select * from bookroster";
-            ResultSet rs = st.executeQuery(sql);
-
-            float margin = 50;
-            float yStart = 700;
-            float tableWidth = 500;
-            float yPosition = yStart;
-            final float rowHeight = 20;
-            final float cellMargin = 5;
-
-            contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
-            contentStream.beginText();
-            contentStream.newLineAtOffset(margin, yPosition);
-            contentStream.showText("ID");
-            contentStream.newLineAtOffset(100, 0);
-            contentStream.showText("Title");
-            contentStream.newLineAtOffset(150, 0);
-            contentStream.showText("Author");
-            contentStream.newLineAtOffset(100, 0);
-            contentStream.showText("Quantity");
-            contentStream.endText();
-
-            yPosition -= rowHeight;
-
-            contentStream.setFont(PDType1Font.HELVETICA, 12);
-            while (rs.next()) {
-                String ID = String.valueOf(rs.getInt("ID"));
-                String Title = String.valueOf(rs.getString("title"));
-                String Author = String.valueOf(rs.getString("author"));
-                String Quantity = String.valueOf(rs.getInt("quantity"));
-
-                contentStream.beginText();
-                contentStream.newLineAtOffset(margin, yPosition);
-                contentStream.showText(ID);
-                contentStream.newLineAtOffset(100, 0);
-                contentStream.showText(Title);
-                contentStream.newLineAtOffset(150, 0);
-                contentStream.showText(Author);
-                contentStream.newLineAtOffset(100, 0);
-                contentStream.showText(Quantity);
-                contentStream.endText();
-
-                sumOfQuantities += Integer.parseInt(Quantity);
-
-                yPosition -= rowHeight;
-            }
-
-            con.close();
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        return sumOfQuantities;
-    }
-    
     /**
      * @param args the command line arguments
      */
