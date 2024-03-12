@@ -4,11 +4,20 @@
  */
 package sphbookrecords;
 
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+
 
 /**
  *
@@ -74,6 +83,7 @@ public class logFiles extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         ContainerTable = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
+        printButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Logs");
@@ -111,6 +121,16 @@ public class logFiles extends javax.swing.JFrame {
             }
         });
 
+        printButton.setFont(new java.awt.Font("Addington CF Regular", 0, 12)); // NOI18N
+        printButton.setText("Print");
+        printButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.gray, java.awt.Color.lightGray, java.awt.Color.gray, java.awt.Color.lightGray));
+        Tablebutton.add(printButton);
+        printButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -120,9 +140,11 @@ public class logFiles extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(185, 185, 185)
+                .addGap(123, 123, 123)
                 .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
-                .addGap(184, 184, 184))
+                .addGap(48, 48, 48)
+                .addComponent(printButton, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+                .addGap(128, 128, 128))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -130,7 +152,9 @@ public class logFiles extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(printButton))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
@@ -152,6 +176,94 @@ public class logFiles extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
+       try {
+            PDDocument document = new PDDocument();
+            PDPage page = new PDPage();
+            document.addPage(page);
+
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+
+            int sumOfQuantities = displayTable(contentStream);
+
+            contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+            contentStream.newLine();
+            contentStream.showText("Sum of Quantities: " + sumOfQuantities);
+
+            contentStream.close();
+
+            document.save(new File("./Desktop/TableData.pdf"));
+            document.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_printButtonActionPerformed
+
+    private int displayTable(PDPageContentStream contentStream) {
+        updateTable();
+        int sumOfQuantities = 0;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost/sphbookinventory", "root", "");
+
+            Statement st = con.createStatement();
+            String sql = "select * from bookroster";
+            ResultSet rs = st.executeQuery(sql);
+
+            float margin = 50;
+            float yStart = 700;
+            float tableWidth = 500;
+            float yPosition = yStart;
+            final float rowHeight = 20;
+            final float cellMargin = 5;
+
+            contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+            contentStream.beginText();
+            contentStream.newLineAtOffset(margin, yPosition);
+            contentStream.showText("ID");
+            contentStream.newLineAtOffset(100, 0);
+            contentStream.showText("Title");
+            contentStream.newLineAtOffset(150, 0);
+            contentStream.showText("Author");
+            contentStream.newLineAtOffset(100, 0);
+            contentStream.showText("Quantity");
+            contentStream.endText();
+
+            yPosition -= rowHeight;
+
+            contentStream.setFont(PDType1Font.HELVETICA, 12);
+            while (rs.next()) {
+                String ID = String.valueOf(rs.getInt("ID"));
+                String Title = String.valueOf(rs.getString("title"));
+                String Author = String.valueOf(rs.getString("author"));
+                String Quantity = String.valueOf(rs.getInt("quantity"));
+
+                contentStream.beginText();
+                contentStream.newLineAtOffset(margin, yPosition);
+                contentStream.showText(ID);
+                contentStream.newLineAtOffset(100, 0);
+                contentStream.showText(Title);
+                contentStream.newLineAtOffset(150, 0);
+                contentStream.showText(Author);
+                contentStream.newLineAtOffset(100, 0);
+                contentStream.showText(Quantity);
+                contentStream.endText();
+
+                sumOfQuantities += Integer.parseInt(Quantity);
+
+                yPosition -= rowHeight;
+            }
+
+            con.close();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return sumOfQuantities;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -197,5 +309,6 @@ public class logFiles extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton printButton;
     // End of variables declaration//GEN-END:variables
 }
