@@ -51,7 +51,6 @@ public class mainMenu extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Inventory System");
-        setPreferredSize(new java.awt.Dimension(1280, 720));
 
         jPanel1.setBackground(new java.awt.Color(0, 51, 204));
 
@@ -86,6 +85,7 @@ public class mainMenu extends javax.swing.JFrame {
         entry.setText("Entry");
         entry.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.gray, java.awt.Color.lightGray, java.awt.Color.gray, java.awt.Color.lightGray), null));
         menuButtons.add(entry);
+        entry.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         entry.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 entryActionPerformed(evt);
@@ -96,6 +96,7 @@ public class mainMenu extends javax.swing.JFrame {
         borrowBook.setText("Borrow Book");
         borrowBook.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.gray, java.awt.Color.lightGray, java.awt.Color.gray, java.awt.Color.lightGray), null));
         menuButtons.add(borrowBook);
+        borrowBook.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         borrowBook.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 borrowBookActionPerformed(evt);
@@ -106,6 +107,7 @@ public class mainMenu extends javax.swing.JFrame {
         booksLog.setText("Logs");
         booksLog.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.gray, java.awt.Color.lightGray, java.awt.Color.gray, java.awt.Color.lightGray), null));
         menuButtons.add(booksLog);
+        booksLog.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         booksLog.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 booksLogActionPerformed(evt);
@@ -116,6 +118,7 @@ public class mainMenu extends javax.swing.JFrame {
         exitButton.setText("Exit");
         exitButton.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.gray, java.awt.Color.lightGray, java.awt.Color.gray, java.awt.Color.lightGray), null));
         menuButtons.add(exitButton);
+        exitButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         exitButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exitButtonActionPerformed(evt);

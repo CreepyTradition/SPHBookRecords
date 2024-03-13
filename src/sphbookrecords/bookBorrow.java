@@ -143,6 +143,7 @@ public class bookBorrow extends javax.swing.JFrame {
         borrowButton.setFont(new java.awt.Font("Addington CF Regular", 0, 18)); // NOI18N
         borrowButton.setText("Borrow");
         borrowButtons.add(borrowButton);
+        borrowButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         borrowButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 borrowButtonActionPerformed(evt);
@@ -152,6 +153,7 @@ public class bookBorrow extends javax.swing.JFrame {
         returnButton.setFont(new java.awt.Font("Addington CF Regular", 0, 18)); // NOI18N
         returnButton.setText("Return");
         borrowButtons.add(returnButton);
+        returnButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         returnButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 returnButtonActionPerformed(evt);
@@ -161,6 +163,7 @@ public class bookBorrow extends javax.swing.JFrame {
         mainMenu.setFont(new java.awt.Font("Addington CF Regular", 0, 18)); // NOI18N
         mainMenu.setText("Main Menu");
         borrowButtons.add(mainMenu);
+        mainMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         mainMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mainMenuActionPerformed(evt);
